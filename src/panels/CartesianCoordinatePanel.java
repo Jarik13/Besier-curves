@@ -6,6 +6,18 @@ import java.awt.*;
 public class CartesianCoordinatePanel extends JPanel {
     private int scale = 50;
 
+    public CartesianCoordinatePanel() {
+        addMouseWheelListener(e -> {
+            int rotation = e.getWheelRotation();
+            if (rotation < 0) {
+                scale += 5;
+            } else if (rotation > 0 && scale > 25) {
+                scale -= 5;
+            }
+            repaint();
+        });
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
