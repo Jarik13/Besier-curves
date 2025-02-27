@@ -67,12 +67,21 @@ public class CartesianCoordinatePanel extends JPanel {
 
         drawGrid(g2d, width, height, centerX, centerY);
 
-        g2d.setColor(Color.RED);
-        for (Point p : manager.getPoints()) {
+        for (int i = 0; i < manager.getPoints().size(); i++) {
+            Point p = manager.getPoints().get(i);
             int x = p.x * scale + centerX;
             int y = centerY - p.y * scale;
-            g2d.fillOval(x - 3, y - 3, 6, 6);
+
+            if (i == 0 || i == manager.getPoints().size() - 1) {
+                g2d.setColor(Color.BLACK);
+                g2d.fillOval(x - 4, y - 4, 10, 10);
+            } else {
+                g2d.setColor(Color.BLUE);
+            }
+
+            g2d.fillOval(x - 4, y - 4, 8, 8);
         }
+
 
         if (createCurve && manager.getPoints().size() > 1) {
             g2d.setColor(Color.BLUE);
