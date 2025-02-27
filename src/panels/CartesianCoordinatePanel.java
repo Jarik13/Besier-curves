@@ -22,5 +22,19 @@ public class CartesianCoordinatePanel extends JPanel {
 
         g2d.drawLine(0, centerY, width, centerY);
         g2d.drawLine(centerX, 0, centerX, height);
+
+        drawArrow(g2d, width, centerY, true);
+        drawArrow(g2d, centerX, 0, false);
+    }
+
+    private void drawArrow(Graphics2D g2d, int x, int y, boolean isXAxis) {
+        int arrowSize = 10;
+        if (isXAxis) {
+            g2d.drawLine(x - arrowSize, y + arrowSize / 2, x, y);
+            g2d.drawLine(x - arrowSize, y - arrowSize / 2, x, y);
+        } else {
+            g2d.drawLine(x - arrowSize / 2, y + arrowSize, x, y);
+            g2d.drawLine(x + arrowSize / 2, y + arrowSize, x, y);
+        }
     }
 }
