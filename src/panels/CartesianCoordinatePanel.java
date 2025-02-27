@@ -85,6 +85,22 @@ public class CartesianCoordinatePanel extends JPanel {
             g2d.drawString(pointLabel, x + 5, y - 5);
         }
 
+        float[] dashPattern = {10, 10};
+        g2d.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 0, dashPattern, 0));
+
+        for (int i = 0; i < manager.getPoints().size() - 1; i++) {
+            Point p1 = manager.getPoints().get(i);
+            Point p2 = manager.getPoints().get(i + 1);
+
+            int x1 = p1.x * scale + centerX;
+            int y1 = centerY - p1.y * scale;
+            int x2 = p2.x * scale + centerX;
+            int y2 = centerY - p2.y * scale;
+
+            g2d.setColor(Color.BLUE);
+            g2d.drawLine(x1, y1, x2, y2);
+        }
+
         if (createCurve && manager.getPoints().size() > 1) {
             g2d.setColor(Color.BLUE);
             g2d.setStroke(new BasicStroke(2));
