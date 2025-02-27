@@ -9,7 +9,7 @@ import java.util.List;
 
 public class CartesianCoordinatePanel extends JPanel {
     private int scale = 50;
-    private BezierCurveManager manager = new BezierCurveManager();
+    private final BezierCurveManager manager = new BezierCurveManager();
     private boolean createCurve = false;
 
     public CartesianCoordinatePanel() {
@@ -80,8 +80,10 @@ public class CartesianCoordinatePanel extends JPanel {
             }
 
             g2d.fillOval(x - 4, y - 4, 8, 8);
-        }
 
+            String pointLabel = "P" + (i + 1);
+            g2d.drawString(pointLabel, x + 5, y - 5);
+        }
 
         if (createCurve && manager.getPoints().size() > 1) {
             g2d.setColor(Color.BLUE);
