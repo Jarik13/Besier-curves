@@ -27,6 +27,11 @@ public class CartesianCoordinatePanel extends JPanel {
         repaint();
     }
 
+    public void clearPoints() {
+        manager.clearPoints();
+        repaint();
+    }
+
     public List<Point> getPoints() {
         return manager.getPoints();
     }

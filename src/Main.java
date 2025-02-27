@@ -56,6 +56,11 @@ public class Main {
             }
         });
 
+        clearButton.addActionListener(e -> {
+            mainPanel.clearPoints();
+            tableModel.setRowCount(0);
+        });
+
         inputPanel.add(xLabel);
         inputPanel.add(xField);
         inputPanel.add(yLabel);

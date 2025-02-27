@@ -11,6 +11,10 @@ public class BezierCurveManager {
         points.add(new Point(x, y));
     }
 
+    public void clearPoints() {
+        points.clear();
+    }
+
     public List<Point> getPoints() {
         return points;
     }
