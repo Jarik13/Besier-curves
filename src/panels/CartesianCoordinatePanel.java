@@ -4,11 +4,13 @@ import managers.BezierCurveManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.List;
 
 public class CartesianCoordinatePanel extends JPanel {
     private int scale = 50;
     private BezierCurveManager manager = new BezierCurveManager();
+    private boolean createCurve = false;
 
     public CartesianCoordinatePanel() {
         addMouseWheelListener(e -> {
@@ -34,6 +36,10 @@ public class CartesianCoordinatePanel extends JPanel {
 
     public List<Point> getPoints() {
         return manager.getPoints();
+    }
+
+    public void setCreateCurve(boolean createCurve) {
+        this.createCurve = createCurve;
     }
 
     @Override
@@ -67,6 +73,27 @@ public class CartesianCoordinatePanel extends JPanel {
             int y = centerY - p.y * scale;
             g2d.fillOval(x - 3, y - 3, 6, 6);
         }
+
+        if (createCurve && manager.getPoints().size() > 1) {
+            g2d.setColor(Color.BLUE);
+            g2d.setStroke(new BasicStroke(2));
+
+            Point2D.Double prev = null;
+
+            for (double t = 0; t <= 1; t += 0.001) {
+                Point2D.Double bezierPoint = manager.calculateBezierPoint(t, scale, centerX, centerY);
+
+                int x = (int) bezierPoint.x;
+                int y = (int) bezierPoint.y;
+
+                if (prev != null) {
+                    g2d.drawLine((int) prev.x, (int) prev.y, x, y);
+                }
+
+                prev = bezierPoint;
+            }
+        }
+
     }
 
     private void drawArrow(Graphics2D g2d, int x, int y, boolean isXAxis) {

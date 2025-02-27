@@ -61,6 +61,11 @@ public class Main {
             tableModel.setRowCount(0);
         });
 
+        createCurveButton.addActionListener(e -> {
+            mainPanel.setCreateCurve(true);
+            mainPanel.repaint();
+        });
+
         inputPanel.add(xLabel);
         inputPanel.add(xField);
         inputPanel.add(yLabel);
