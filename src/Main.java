@@ -37,6 +37,25 @@ public class Main {
         JButton clearButton = new JButton("Clear");
         JButton createCurveButton = new JButton("Create Curve");
 
+        addButton.addActionListener(e -> {
+            try {
+                int x = Integer.parseInt(xField.getText());
+                int y = Integer.parseInt(yField.getText());
+
+                mainPanel.addPoint(x, y);
+
+                Point point = mainPanel.getPoints().getLast();
+                String label = "P" + mainPanel.getPoints().size();
+                tableModel.addRow(new Object[]{label, point.x, point.y});
+
+                xField.setText("");
+                yField.setText("");
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame, "Please enter valid integers for X and Y.");
+            }
+        });
+
         inputPanel.add(xLabel);
         inputPanel.add(xField);
         inputPanel.add(yLabel);

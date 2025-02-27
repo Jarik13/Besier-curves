@@ -1,10 +1,14 @@
 package panels;
 
+import managers.BezierCurveManager;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class CartesianCoordinatePanel extends JPanel {
     private int scale = 50;
+    private BezierCurveManager manager = new BezierCurveManager();
 
     public CartesianCoordinatePanel() {
         addMouseWheelListener(e -> {
@@ -16,6 +20,15 @@ public class CartesianCoordinatePanel extends JPanel {
             }
             repaint();
         });
+    }
+
+    public void addPoint(int x, int y) {
+        manager.addPoint(x, y);
+        repaint();
+    }
+
+    public List<Point> getPoints() {
+        return manager.getPoints();
     }
 
     @Override
@@ -42,6 +55,13 @@ public class CartesianCoordinatePanel extends JPanel {
         g2d.drawString("Y", centerX + 5, 15);
 
         drawGrid(g2d, width, height, centerX, centerY);
+
+        g2d.setColor(Color.RED);
+        for (Point p : manager.getPoints()) {
+            int x = p.x * scale + centerX;
+            int y = centerY - p.y * scale;
+            g2d.fillOval(x - 3, y - 3, 6, 6);
+        }
     }
 
     private void drawArrow(Graphics2D g2d, int x, int y, boolean isXAxis) {
