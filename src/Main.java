@@ -1,6 +1,8 @@
 import panels.CartesianCoordinatePanel;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -74,6 +76,37 @@ public class Main {
         JPanel bernsteinPanel = new JPanel();
         bernsteinPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
+        JLabel tLabel = new JLabel("t (Step):");
+        JTextField tField = new JTextField(5);
+
+        double tStep = 0.01;
+        mainPanel.setStep(tStep);
+
+        tField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updateStep();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updateStep();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                updateStep();
+            }
+
+            private void updateStep() {
+                try {
+                    mainPanel.setStep(Double.parseDouble(tField.getText()));
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(frame, "Invalid step value.");
+                }
+            }
+        });
+
         JLabel iLabel = new JLabel("i (Index):");
         JTextField iField = new JTextField(5);
         JLabel tStartLabel = new JLabel("start:");
@@ -87,17 +120,16 @@ public class Main {
                 int index = Integer.parseInt(iField.getText());
                 double tStart = Double.parseDouble(tStartField.getText());
                 double tEnd = Double.parseDouble(tEndField.getText());
-                double step = 0.01;
 
                 FileWriter writer = new FileWriter("bernstein_results.txt");
                 writer.write("t\t\tBernstein Polynomial\t\tBezier Point (X, Y)\n");
 
-                for (double t = tStart; t <= tEnd; t += step) {
+                for (double t = tStart; t <= tEnd; t += mainPanel.getStep()) {
                     double bernsteinValue = mainPanel.getManager().bernsteinPolynomial(index, mainPanel.getManager().getPoints().size() - 1, t);
 
                     Point2D.Double bezierPoint = mainPanel.getManager().calculateBezierPoint(t, mainPanel.getScale(), mainPanel.getWidth() / 2, mainPanel.getHeight() / 2);
 
-                    writer.write(String.format("%.2f\t%.6f\t\t\t\t\t%.2f, %.2f\n", t, bernsteinValue, bezierPoint.x, bezierPoint.y));
+                    writer.write(String.format("%.4f\t%.6f\t\t\t\t\t%.2f, %.2f\n", t, bernsteinValue, bezierPoint.x, bezierPoint.y));
                 }
 
                 writer.close();
@@ -107,6 +139,8 @@ public class Main {
             }
         });
 
+        bernsteinPanel.add(tLabel);
+        bernsteinPanel.add(tField);
         bernsteinPanel.add(iLabel);
         bernsteinPanel.add(iField);
         bernsteinPanel.add(tStartLabel);

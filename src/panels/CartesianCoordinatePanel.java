@@ -17,6 +17,7 @@ public class CartesianCoordinatePanel extends JPanel {
     private int draggedPointIndex = -1;
     private Point lastMousePos = null;
     private DefaultTableModel tableModel;
+    private double step = 0.001;
 
     public CartesianCoordinatePanel() {
         addMouseWheelListener(e -> {
@@ -97,6 +98,14 @@ public class CartesianCoordinatePanel extends JPanel {
         this.tableModel = tableModel;
     }
 
+    public void setStep(double step) {
+        this.step = step;
+    }
+
+    public double getStep() {
+        return step;
+    }
+
     public void updateTable() {
         tableModel.setRowCount(0);
         for (int i = 0; i < manager.getPoints().size(); i++) {
@@ -175,7 +184,7 @@ public class CartesianCoordinatePanel extends JPanel {
 
             Point2D.Double prev = null;
 
-            for (double t = 0; t <= 1; t += 0.001) {
+            for (double t = 0; t <= 1; t += step) {
                 Point2D.Double bezierPoint = manager.calculateBezierPoint(t, scale, centerX, centerY);
 
                 int x = (int) bezierPoint.x;
