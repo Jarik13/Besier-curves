@@ -4,6 +4,8 @@ import managers.BezierCurveManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.List;
 
@@ -11,6 +13,8 @@ public class CartesianCoordinatePanel extends JPanel {
     private int scale = 50;
     private final BezierCurveManager manager = new BezierCurveManager();
     private boolean createCurve = false;
+    private int draggedPointIndex = -1;  // Індекс перетягуваної точки
+    private Point lastMousePos = null;
 
     public CartesianCoordinatePanel() {
         addMouseWheelListener(e -> {
@@ -21,6 +25,49 @@ public class CartesianCoordinatePanel extends JPanel {
                 scale -= 5;
             }
             repaint();
+        });
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                Point clickPoint = e.getPoint();
+                List<Point> points = manager.getPoints();
+                for (int i = 0; i < points.size(); i++) {
+                    Point p = points.get(i);
+                    int x = p.x * scale + getWidth() / 2;
+                    int y = getHeight() / 2 - p.y * scale;
+                    if (Math.abs(clickPoint.x - x) < 8 && Math.abs(clickPoint.y - y) < 8) {
+                        draggedPointIndex = i;
+                        lastMousePos = clickPoint;
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                draggedPointIndex = -1;
+                lastMousePos = null;
+            }
+        });
+
+        addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (draggedPointIndex != -1 && lastMousePos != null) {
+                    int dx = e.getX() - lastMousePos.x;
+                    int dy = e.getY() - lastMousePos.y;
+
+                    Point draggedPoint = manager.getPoints().get(draggedPointIndex);
+
+                    draggedPoint.x += (dx / scale);
+                    draggedPoint.y -= (dy / scale);
+
+                    lastMousePos = e.getPoint();
+
+                    repaint();
+                }
+            }
         });
     }
 
@@ -120,7 +167,6 @@ public class CartesianCoordinatePanel extends JPanel {
                 prev = bezierPoint;
             }
         }
-
     }
 
     private void drawArrow(Graphics2D g2d, int x, int y, boolean isXAxis) {
