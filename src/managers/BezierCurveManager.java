@@ -42,4 +42,29 @@ public class BezierCurveManager {
 
         return tempPoints.get(0);
     }
+
+    public double bernsteinPolynomial(int i, int n, double t) {
+        double binomialCoeff = binomialCoefficient(n, i);
+
+        double term1 = Math.pow(1 - t, n - i);
+        double term2 = Math.pow(t, i);
+
+        return binomialCoeff * term1 * term2;
+    }
+
+    private double binomialCoefficient(int n, int i) {
+        if (i == 0 || i == n) {
+            return 1;
+        }
+
+        double num = 1;
+        double denom = 1;
+
+        for (int j = 1; j <= i; j++) {
+            num *= (n - j + 1);
+            denom *= j;
+        }
+
+        return num / denom;
+    }
 }

@@ -81,8 +81,12 @@ public class CartesianCoordinatePanel extends JPanel {
         repaint();
     }
 
-    public List<Point2D.Double> getPoints() {
-        return manager.getPoints();
+    public int getScale() {
+        return scale;
+    }
+
+    public BezierCurveManager getManager() {
+        return manager;
     }
 
     public void setCreateCurve(boolean createCurve) {

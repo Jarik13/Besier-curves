@@ -3,6 +3,8 @@ import panels.CartesianCoordinatePanel;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.geom.Point2D;
+import java.io.FileWriter;
 
 public class Main {
     public static void main(String[] args) {
@@ -79,6 +81,31 @@ public class Main {
         JLabel tEndLabel = new JLabel("end:");
         JTextField tEndField = new JTextField(10);
         JButton calculateButton = new JButton("Calculate Bernstein");
+
+        calculateButton.addActionListener(e -> {
+            try {
+                int index = Integer.parseInt(iField.getText());
+                double tStart = Double.parseDouble(tStartField.getText());
+                double tEnd = Double.parseDouble(tEndField.getText());
+                double step = 0.01;
+
+                FileWriter writer = new FileWriter("bernstein_results.txt");
+                writer.write("t\t\tBernstein Polynomial\t\tBezier Point (X, Y)\n");
+
+                for (double t = tStart; t <= tEnd; t += step) {
+                    double bernsteinValue = mainPanel.getManager().bernsteinPolynomial(index, mainPanel.getManager().getPoints().size() - 1, t);
+
+                    Point2D.Double bezierPoint = mainPanel.getManager().calculateBezierPoint(t, mainPanel.getScale(), mainPanel.getWidth() / 2, mainPanel.getHeight() / 2);
+
+                    writer.write(String.format("%.2f\t%.6f\t\t\t\t\t%.2f, %.2f\n", t, bernsteinValue, bezierPoint.x, bezierPoint.y));
+                }
+
+                writer.close();
+                JOptionPane.showMessageDialog(frame, "Results saved to bernstein_results.txt");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "Invalid input.");
+            }
+        });
 
         bernsteinPanel.add(iLabel);
         bernsteinPanel.add(iField);
