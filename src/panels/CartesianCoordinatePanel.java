@@ -34,9 +34,9 @@ public class CartesianCoordinatePanel extends JPanel {
                 List<Point2D.Double> points = manager.getPoints();
                 for (int i = 0; i < points.size(); i++) {
                     Point2D.Double p = points.get(i);
-                    int x = (int) p.x * scale + getWidth() / 2;
-                    int y = (int) (getHeight() / 2 - p.y * scale);
-                    if (Math.abs(clickPoint.x - x) < 8 && Math.abs(clickPoint.y - y) < 8) {
+                    int x = (int) (p.x * scale + (double) getWidth() / 2);
+                    int y = (int) ((double) getHeight() / 2 - p.y * scale);
+                    if (Math.abs(clickPoint.x - x) < 15 && Math.abs(clickPoint.y - y) < 15) {
                         draggedPointIndex = i;
                         lastMousePos = clickPoint;
                         break;
@@ -46,7 +46,6 @@ public class CartesianCoordinatePanel extends JPanel {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                draggedPointIndex = -1;
                 lastMousePos = null;
             }
         });
@@ -117,7 +116,7 @@ public class CartesianCoordinatePanel extends JPanel {
             Point2D.Double p = manager.getPoints().get(i);
             int x = (int) (p.x * scale + centerX);
             int y = (int) (centerY - p.y * scale);
-            System.out.println("x = " + x + ", y = " + y);
+
             if (i == 0 || i == manager.getPoints().size() - 1) {
                 g2d.setColor(Color.BLACK);
                 g2d.fillOval(x - 4, y - 4, 10, 10);
