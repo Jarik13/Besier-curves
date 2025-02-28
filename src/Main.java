@@ -3,6 +3,7 @@ import panels.CartesianCoordinatePanel;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.geom.Point2D;
 
 public class Main {
     public static void main(String[] args) {
@@ -39,18 +40,17 @@ public class Main {
 
         addButton.addActionListener(e -> {
             try {
-                int x = Integer.parseInt(xField.getText());
-                int y = Integer.parseInt(yField.getText());
+                double x = Double.parseDouble(xField.getText());
+                double y = Double.parseDouble(yField.getText());
 
                 mainPanel.addPoint(x, y);
 
-                Point point = mainPanel.getPoints().getLast();
+                Point2D.Double point = mainPanel.getPoints().getLast();
                 String label = "P" + mainPanel.getPoints().size();
                 tableModel.addRow(new Object[]{label, point.x, point.y});
 
                 xField.setText("");
                 yField.setText("");
-
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(frame, "Please enter valid integers for X and Y.");
             }

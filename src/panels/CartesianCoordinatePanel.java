@@ -13,7 +13,7 @@ public class CartesianCoordinatePanel extends JPanel {
     private int scale = 50;
     private final BezierCurveManager manager = new BezierCurveManager();
     private boolean createCurve = false;
-    private int draggedPointIndex = -1;  // Індекс перетягуваної точки
+    private int draggedPointIndex = -1;
     private Point lastMousePos = null;
 
     public CartesianCoordinatePanel() {
@@ -31,11 +31,11 @@ public class CartesianCoordinatePanel extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 Point clickPoint = e.getPoint();
-                List<Point> points = manager.getPoints();
+                List<Point2D.Double> points = manager.getPoints();
                 for (int i = 0; i < points.size(); i++) {
-                    Point p = points.get(i);
-                    int x = p.x * scale + getWidth() / 2;
-                    int y = getHeight() / 2 - p.y * scale;
+                    Point2D.Double p = points.get(i);
+                    int x = (int) p.x * scale + getWidth() / 2;
+                    int y = (int) (getHeight() / 2 - p.y * scale);
                     if (Math.abs(clickPoint.x - x) < 8 && Math.abs(clickPoint.y - y) < 8) {
                         draggedPointIndex = i;
                         lastMousePos = clickPoint;
@@ -58,20 +58,19 @@ public class CartesianCoordinatePanel extends JPanel {
                     int dx = e.getX() - lastMousePos.x;
                     int dy = e.getY() - lastMousePos.y;
 
-                    Point draggedPoint = manager.getPoints().get(draggedPointIndex);
+                    Point2D.Double draggedPoint = manager.getPoints().get(draggedPointIndex);
 
-                    draggedPoint.x += (dx / scale);
-                    draggedPoint.y -= (dy / scale);
+                    draggedPoint.x += ((double) dx / scale);
+                    draggedPoint.y -= ((double) dy / scale);
 
                     lastMousePos = e.getPoint();
-
                     repaint();
                 }
             }
         });
     }
 
-    public void addPoint(int x, int y) {
+    public void addPoint(double x, double y) {
         manager.addPoint(x, y);
         repaint();
     }
@@ -81,7 +80,7 @@ public class CartesianCoordinatePanel extends JPanel {
         repaint();
     }
 
-    public List<Point> getPoints() {
+    public List<Point2D.Double> getPoints() {
         return manager.getPoints();
     }
 
@@ -115,10 +114,10 @@ public class CartesianCoordinatePanel extends JPanel {
         drawGrid(g2d, width, height, centerX, centerY);
 
         for (int i = 0; i < manager.getPoints().size(); i++) {
-            Point p = manager.getPoints().get(i);
-            int x = p.x * scale + centerX;
-            int y = centerY - p.y * scale;
-
+            Point2D.Double p = manager.getPoints().get(i);
+            int x = (int) (p.x * scale + centerX);
+            int y = (int) (centerY - p.y * scale);
+            System.out.println("x = " + x + ", y = " + y);
             if (i == 0 || i == manager.getPoints().size() - 1) {
                 g2d.setColor(Color.BLACK);
                 g2d.fillOval(x - 4, y - 4, 10, 10);
@@ -136,13 +135,13 @@ public class CartesianCoordinatePanel extends JPanel {
         g2d.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 0, dashPattern, 0));
 
         for (int i = 0; i < manager.getPoints().size() - 1; i++) {
-            Point p1 = manager.getPoints().get(i);
-            Point p2 = manager.getPoints().get(i + 1);
+            Point2D.Double p1 = manager.getPoints().get(i);
+            Point2D.Double p2 = manager.getPoints().get(i + 1);
 
-            int x1 = p1.x * scale + centerX;
-            int y1 = centerY - p1.y * scale;
-            int x2 = p2.x * scale + centerX;
-            int y2 = centerY - p2.y * scale;
+            int x1 = (int) (p1.x * scale + centerX);
+            int y1 = (int) (centerY - p1.y * scale);
+            int x2 = (int) (p2.x * scale + centerX);
+            int y2 = (int) (centerY - p2.y * scale);
 
             g2d.setColor(Color.BLUE);
             g2d.drawLine(x1, y1, x2, y2);
