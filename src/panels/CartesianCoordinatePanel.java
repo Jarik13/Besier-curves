@@ -3,6 +3,7 @@ package panels;
 import managers.BezierCurveManager;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -15,6 +16,7 @@ public class CartesianCoordinatePanel extends JPanel {
     private boolean createCurve = false;
     private int draggedPointIndex = -1;
     private Point lastMousePos = null;
+    private DefaultTableModel tableModel;
 
     public CartesianCoordinatePanel() {
         addMouseWheelListener(e -> {
@@ -61,7 +63,7 @@ public class CartesianCoordinatePanel extends JPanel {
 
                     draggedPoint.x += ((double) dx / scale);
                     draggedPoint.y -= ((double) dy / scale);
-
+                    updateTable();
                     lastMousePos = e.getPoint();
                     repaint();
                 }
@@ -85,6 +87,23 @@ public class CartesianCoordinatePanel extends JPanel {
 
     public void setCreateCurve(boolean createCurve) {
         this.createCurve = createCurve;
+    }
+
+    public void setTableModel(DefaultTableModel tableModel) {
+        this.tableModel = tableModel;
+    }
+
+    public void updateTable() {
+        tableModel.setRowCount(0);
+        for (int i = 0; i < manager.getPoints().size(); i++) {
+            Point2D.Double p = manager.getPoints().get(i);
+            String label = "P" + (i + 1);
+
+            String xFormatted = String.format("%.2f", p.x);
+            String yFormatted = String.format("%.2f", p.y);
+
+            tableModel.addRow(new Object[]{label, xFormatted, yFormatted});
+        }
     }
 
     @Override

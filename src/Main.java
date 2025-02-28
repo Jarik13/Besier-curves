@@ -44,10 +44,8 @@ public class Main {
                 double y = Double.parseDouble(yField.getText());
 
                 mainPanel.addPoint(x, y);
-
-                Point2D.Double point = mainPanel.getPoints().getLast();
-                String label = "P" + mainPanel.getPoints().size();
-                tableModel.addRow(new Object[]{label, point.x, point.y});
+                mainPanel.setTableModel(tableModel);
+                mainPanel.updateTable();
 
                 xField.setText("");
                 yField.setText("");
