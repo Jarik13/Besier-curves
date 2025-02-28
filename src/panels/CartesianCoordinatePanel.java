@@ -3,7 +3,10 @@ package panels;
 import managers.BezierCurveManager;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.List;
 
@@ -11,6 +14,9 @@ public class CartesianCoordinatePanel extends JPanel {
     private int scale = 50;
     private final BezierCurveManager manager = new BezierCurveManager();
     private boolean createCurve = false;
+    private int draggedPointIndex = -1;
+    private Point lastMousePos = null;
+    private DefaultTableModel tableModel;
 
     public CartesianCoordinatePanel() {
         addMouseWheelListener(e -> {
@@ -22,9 +28,50 @@ public class CartesianCoordinatePanel extends JPanel {
             }
             repaint();
         });
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                Point clickPoint = e.getPoint();
+                List<Point2D.Double> points = manager.getPoints();
+                for (int i = 0; i < points.size(); i++) {
+                    Point2D.Double p = points.get(i);
+                    int x = (int) (p.x * scale + (double) getWidth() / 2);
+                    int y = (int) ((double) getHeight() / 2 - p.y * scale);
+                    if (Math.abs(clickPoint.x - x) < 15 && Math.abs(clickPoint.y - y) < 15) {
+                        draggedPointIndex = i;
+                        lastMousePos = clickPoint;
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                lastMousePos = null;
+            }
+        });
+
+        addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (draggedPointIndex != -1 && lastMousePos != null) {
+                    int dx = e.getX() - lastMousePos.x;
+                    int dy = e.getY() - lastMousePos.y;
+
+                    Point2D.Double draggedPoint = manager.getPoints().get(draggedPointIndex);
+
+                    draggedPoint.x += ((double) dx / scale);
+                    draggedPoint.y -= ((double) dy / scale);
+                    updateTable();
+                    lastMousePos = e.getPoint();
+                    repaint();
+                }
+            }
+        });
     }
 
-    public void addPoint(int x, int y) {
+    public void addPoint(double x, double y) {
         manager.addPoint(x, y);
         repaint();
     }
@@ -34,12 +81,29 @@ public class CartesianCoordinatePanel extends JPanel {
         repaint();
     }
 
-    public List<Point> getPoints() {
+    public List<Point2D.Double> getPoints() {
         return manager.getPoints();
     }
 
     public void setCreateCurve(boolean createCurve) {
         this.createCurve = createCurve;
+    }
+
+    public void setTableModel(DefaultTableModel tableModel) {
+        this.tableModel = tableModel;
+    }
+
+    public void updateTable() {
+        tableModel.setRowCount(0);
+        for (int i = 0; i < manager.getPoints().size(); i++) {
+            Point2D.Double p = manager.getPoints().get(i);
+            String label = "P" + (i + 1);
+
+            String xFormatted = String.format("%.2f", p.x);
+            String yFormatted = String.format("%.2f", p.y);
+
+            tableModel.addRow(new Object[]{label, xFormatted, yFormatted});
+        }
     }
 
     @Override
@@ -68,9 +132,9 @@ public class CartesianCoordinatePanel extends JPanel {
         drawGrid(g2d, width, height, centerX, centerY);
 
         for (int i = 0; i < manager.getPoints().size(); i++) {
-            Point p = manager.getPoints().get(i);
-            int x = p.x * scale + centerX;
-            int y = centerY - p.y * scale;
+            Point2D.Double p = manager.getPoints().get(i);
+            int x = (int) (p.x * scale + centerX);
+            int y = (int) (centerY - p.y * scale);
 
             if (i == 0 || i == manager.getPoints().size() - 1) {
                 g2d.setColor(Color.BLACK);
@@ -89,13 +153,13 @@ public class CartesianCoordinatePanel extends JPanel {
         g2d.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 0, dashPattern, 0));
 
         for (int i = 0; i < manager.getPoints().size() - 1; i++) {
-            Point p1 = manager.getPoints().get(i);
-            Point p2 = manager.getPoints().get(i + 1);
+            Point2D.Double p1 = manager.getPoints().get(i);
+            Point2D.Double p2 = manager.getPoints().get(i + 1);
 
-            int x1 = p1.x * scale + centerX;
-            int y1 = centerY - p1.y * scale;
-            int x2 = p2.x * scale + centerX;
-            int y2 = centerY - p2.y * scale;
+            int x1 = (int) (p1.x * scale + centerX);
+            int y1 = (int) (centerY - p1.y * scale);
+            int x2 = (int) (p2.x * scale + centerX);
+            int y2 = (int) (centerY - p2.y * scale);
 
             g2d.setColor(Color.BLUE);
             g2d.drawLine(x1, y1, x2, y2);
@@ -120,7 +184,6 @@ public class CartesianCoordinatePanel extends JPanel {
                 prev = bezierPoint;
             }
         }
-
     }
 
     private void drawArrow(Graphics2D g2d, int x, int y, boolean isXAxis) {

@@ -6,23 +6,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BezierCurveManager {
-    List<Point> points = new ArrayList<>();
+    List<Point2D.Double> points = new ArrayList<>();
 
-    public void addPoint(int x, int y) {
-        points.add(new Point(x, y));
+    public void addPoint(double x, double y) {
+        points.add(new Point2D.Double(x, y));
     }
 
     public void clearPoints() {
         points.clear();
     }
 
-    public List<Point> getPoints() {
+    public List<Point2D.Double> getPoints() {
         return points;
     }
 
     public Point2D.Double calculateBezierPoint(double t, int scale, int centerX, int centerY) {
         List<Point2D.Double> tempPoints = new ArrayList<>();
-        for (Point p : points) {
+        for (Point2D.Double p : points) {
             double scaledX = p.x * scale + centerX;
             double scaledY = centerY - p.y * scale;
             tempPoints.add(new Point2D.Double(scaledX, scaledY));
