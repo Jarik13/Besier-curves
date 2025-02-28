@@ -98,10 +98,6 @@ public class CartesianCoordinatePanel extends JPanel {
         this.tableModel = tableModel;
     }
 
-    public void setStep(double step) {
-        this.step = step;
-    }
-
     public double getStep() {
         return step;
     }

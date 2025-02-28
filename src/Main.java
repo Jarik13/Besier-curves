@@ -76,37 +76,6 @@ public class Main {
         JPanel bernsteinPanel = new JPanel();
         bernsteinPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-        JLabel tLabel = new JLabel("t (Step):");
-        JTextField tField = new JTextField(5);
-
-        double tStep = 0.01;
-        mainPanel.setStep(tStep);
-
-        tField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                updateStep();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                updateStep();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                updateStep();
-            }
-
-            private void updateStep() {
-                try {
-                    mainPanel.setStep(Double.parseDouble(tField.getText()));
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(frame, "Invalid step value.");
-                }
-            }
-        });
-
         JLabel iLabel = new JLabel("i (Index):");
         JTextField iField = new JTextField(5);
         JLabel tStartLabel = new JLabel("start:");
@@ -120,6 +89,11 @@ public class Main {
                 int index = Integer.parseInt(iField.getText());
                 double tStart = Double.parseDouble(tStartField.getText());
                 double tEnd = Double.parseDouble(tEndField.getText());
+
+                if (tStart < 0 || tStart > 1 || tEnd < 0 || tEnd > 1) {
+                    JOptionPane.showMessageDialog(frame, "t must be between 0 and 1", "Invalid Range", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
 
                 FileWriter writer = new FileWriter("bernstein_results.txt");
                 writer.write("t\t\tBernstein Polynomial\t\tBezier Point (X, Y)\n");
@@ -139,8 +113,6 @@ public class Main {
             }
         });
 
-        bernsteinPanel.add(tLabel);
-        bernsteinPanel.add(tField);
         bernsteinPanel.add(iLabel);
         bernsteinPanel.add(iField);
         bernsteinPanel.add(tStartLabel);
