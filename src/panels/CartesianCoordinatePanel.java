@@ -18,6 +18,7 @@ public class CartesianCoordinatePanel extends JPanel {
     private Point lastMousePos = null;
     private DefaultTableModel tableModel;
     private double step = 0.001;
+    private boolean useMatrixMethod;
 
     public CartesianCoordinatePanel() {
         addMouseWheelListener(e -> {
@@ -90,6 +91,10 @@ public class CartesianCoordinatePanel extends JPanel {
         return manager;
     }
 
+    public double getStep() {
+        return step;
+    }
+
     public void setCreateCurve(boolean createCurve) {
         this.createCurve = createCurve;
     }
@@ -98,8 +103,8 @@ public class CartesianCoordinatePanel extends JPanel {
         this.tableModel = tableModel;
     }
 
-    public double getStep() {
-        return step;
+    public void setUseMatrixMethod(boolean useMatrixMethod) {
+        this.useMatrixMethod = useMatrixMethod;
     }
 
     public void updateTable() {

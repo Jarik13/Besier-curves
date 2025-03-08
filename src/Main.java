@@ -36,6 +36,7 @@ public class Main {
         JButton addButton = new JButton("Add Point");
         JButton clearButton = new JButton("Clear");
         JButton createCurveButton = new JButton("Create Curve");
+        JCheckBox methodCheckBox = new JCheckBox("Use Matrix Formula");
 
         addButton.addActionListener(e -> {
             try {
@@ -59,6 +60,7 @@ public class Main {
         });
 
         createCurveButton.addActionListener(e -> {
+            mainPanel.setUseMatrixMethod(methodCheckBox.isSelected());
             mainPanel.setCreateCurve(true);
             mainPanel.repaint();
         });
@@ -70,6 +72,7 @@ public class Main {
         inputPanel.add(addButton);
         inputPanel.add(clearButton);
         inputPanel.add(createCurveButton);
+        inputPanel.add(methodCheckBox);
 
         JPanel bernsteinPanel = new JPanel();
         bernsteinPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -99,9 +102,14 @@ public class Main {
                 for (double t = tStart; t <= tEnd; t += mainPanel.getStep()) {
                     double bernsteinValue = mainPanel.getManager().bernsteinPolynomial(index, mainPanel.getManager().getPoints().size() - 1, t);
 
-                    Point2D.Double bezierPoint = mainPanel.getManager().calculateBezierPoint(t, mainPanel.getScale(), mainPanel.getWidth() / 2, mainPanel.getHeight() / 2);
+                    Point2D.Double bezierPoint;
+                    if (methodCheckBox.isSelected()) {
+                        bezierPoint = mainPanel.getManager().calculateBezierPointMatrix(t, mainPanel.getScale(), mainPanel.getWidth() / 2, mainPanel.getHeight() / 2);
+                    } else {
+                        bezierPoint = mainPanel.getManager().calculateBezierPoint(t, mainPanel.getScale(), mainPanel.getWidth() / 2, mainPanel.getHeight() / 2);
+                    }
 
-                    writer.write(String.format("%.4f\t%.6f\t\t\t\t\t%.2f, %.2f\n", t, bernsteinValue, bezierPoint.x, bezierPoint.y));
+                    writer.write(String.format("%.4f\t%.6f\t\t\t\t%.2f, %.2f\n", t, bernsteinValue, bezierPoint.x, bezierPoint.y));
                 }
 
                 writer.close();
