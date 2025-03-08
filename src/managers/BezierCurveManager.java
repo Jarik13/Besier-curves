@@ -43,13 +43,28 @@ public class BezierCurveManager {
         return tempPoints.get(0);
     }
 
+    public Point2D.Double calculateBezierPointMatrix(double t, int scale, int centerX, int centerY) {
+        int n = points.size() - 1;
+        double[] B = new double[points.size()];
+
+        for (int i = 0; i <= n; i++) {
+            B[i] = bernsteinPolynomial(i, n, t);
+        }
+
+        double x = 0, y = 0;
+        for (int i = 0; i <= n; i++) {
+            x += B[i] * points.get(i).x;
+            y += B[i] * points.get(i).y;
+        }
+
+        x = x * scale + centerX;
+        y = centerY - y * scale;
+
+        return new Point2D.Double(x, y);
+    }
+
     public double bernsteinPolynomial(int i, int n, double t) {
-        double binomialCoeff = binomialCoefficient(n, i);
-
-        double term1 = Math.pow(1 - t, n - i);
-        double term2 = Math.pow(t, i);
-
-        return binomialCoeff * term1 * term2;
+        return binomialCoefficient(n, i) * Math.pow(1 - t, n - i) * Math.pow(t, i);
     }
 
     private double binomialCoefficient(int n, int i) {

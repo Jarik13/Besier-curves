@@ -1,8 +1,6 @@
 import panels.CartesianCoordinatePanel;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.geom.Point2D;
