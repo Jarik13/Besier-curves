@@ -186,7 +186,12 @@ public class CartesianCoordinatePanel extends JPanel {
             Point2D.Double prev = null;
 
             for (double t = 0; t <= 1; t += step) {
-                Point2D.Double bezierPoint = manager.calculateBezierPoint(t, scale, centerX, centerY);
+                Point2D.Double bezierPoint;
+                if (!useMatrixMethod) {
+                    bezierPoint = manager.calculateBezierPoint(t, scale, centerX, centerY);
+                } else {
+                    bezierPoint = manager.calculateBezierPointMatrix(t, scale, centerX, centerY);
+                }
 
                 int x = (int) bezierPoint.x;
                 int y = (int) bezierPoint.y;
