@@ -80,6 +80,7 @@ public class CartesianCoordinatePanel extends JPanel {
 
     public void clearPoints() {
         manager.clearPoints();
+        createCurve = false;
         repaint();
     }
 
