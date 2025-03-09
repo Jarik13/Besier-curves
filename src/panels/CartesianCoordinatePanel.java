@@ -18,7 +18,7 @@ public class CartesianCoordinatePanel extends JPanel {
     private Point lastMousePos = null;
     private DefaultTableModel tableModel;
     private double step = 0.001;
-    private boolean useMatrixMethod;
+    private boolean useParametricMethod;
 
     public CartesianCoordinatePanel() {
         addMouseWheelListener(e -> {
@@ -104,8 +104,8 @@ public class CartesianCoordinatePanel extends JPanel {
         this.tableModel = tableModel;
     }
 
-    public void setUseMatrixMethod(boolean useMatrixMethod) {
-        this.useMatrixMethod = useMatrixMethod;
+    public void setUseParametricMethod(boolean useParametricMethod) {
+        this.useParametricMethod = useParametricMethod;
     }
 
     public void updateTable() {
@@ -188,10 +188,10 @@ public class CartesianCoordinatePanel extends JPanel {
 
             for (double t = 0; t <= 1; t += step) {
                 Point2D.Double bezierPoint;
-                if (!useMatrixMethod) {
+                if (!useParametricMethod) {
                     bezierPoint = manager.calculateBezierPoint(t, scale, centerX, centerY);
                 } else {
-                    bezierPoint = manager.calculateBezierPointMatrix(t, scale, centerX, centerY);
+                    bezierPoint = manager.calculateBezierPointParametric(t, scale, centerX, centerY);
                 }
 
                 int x = (int) bezierPoint.x;

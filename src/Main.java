@@ -36,7 +36,7 @@ public class Main {
         JButton addButton = new JButton("Add Point");
         JButton clearButton = new JButton("Clear");
         JButton createCurveButton = new JButton("Create Curve");
-        JCheckBox methodCheckBox = new JCheckBox("Use Matrix Formula");
+        JCheckBox methodCheckBox = new JCheckBox("Use Parametric Formula");
 
         addButton.addActionListener(e -> {
             try {
@@ -60,7 +60,7 @@ public class Main {
         });
 
         createCurveButton.addActionListener(e -> {
-            mainPanel.setUseMatrixMethod(methodCheckBox.isSelected());
+            mainPanel.setUseParametricMethod(methodCheckBox.isSelected());
             mainPanel.setCreateCurve(true);
             mainPanel.repaint();
         });
@@ -104,7 +104,7 @@ public class Main {
 
                     Point2D.Double bezierPoint;
                     if (methodCheckBox.isSelected()) {
-                        bezierPoint = mainPanel.getManager().calculateBezierPointMatrix(t, mainPanel.getScale(), mainPanel.getWidth() / 2, mainPanel.getHeight() / 2);
+                        bezierPoint = mainPanel.getManager().calculateBezierPointParametric(t, mainPanel.getScale(), mainPanel.getWidth() / 2, mainPanel.getHeight() / 2);
                     } else {
                         bezierPoint = mainPanel.getManager().calculateBezierPoint(t, mainPanel.getScale(), mainPanel.getWidth() / 2, mainPanel.getHeight() / 2);
                     }
